@@ -195,7 +195,7 @@ if (totalNoDia.length >= 5) {
       telefone: telefoneCliente,
       servico: servicoSelecionado.nome,
       preco: servicoSelecionado.preco,
-      data: formatarData(dataSelecionada),
+      data: dataSelecionada,
       hora: horarioSelecionado,
       criadoEm: new Date()
     });
@@ -353,6 +353,7 @@ style={{
 
                     <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "8px" }}>
                       {horariosDisponiveis.map((h, i) => (
+                        
                         <button
                           key={i}
                           style={{ padding: "10px", borderRadius: "10px", background: "#9333ea", color: "#fff" }}
