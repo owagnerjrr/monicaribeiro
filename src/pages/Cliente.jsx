@@ -290,12 +290,41 @@ if (totalNoDia.length >= 5) {
             {step === "data" && (
               <div style={{ textAlign: "center" }}>
                 <h2>Escolha uma data</h2>
-<button
-  onClick={() => window.location.href = "/minhas-marcacoes"}
-  className="btn-meus"
->
-  Meus agendamentos
-</button>
+<div 
+style={{ 
+  display: "flex", 
+  justifyContent: "center", 
+  marginTop: "10px", 
+  marginBottom: "15px",
+   }}
+   
+   >
+  <button
+    onClick={() => window.location.href = "/minhas-marcacoes"}
+    style={{
+      background: "#9b59b6",
+  color: "#fff",
+  padding: "12px 30px",
+  borderRadius: "30px",
+  border: "none",
+  cursor: "pointer",
+  fontWeight: "bold",
+  fontSize: "15px",
+  boxShadow: "0 6px 15px rgba(0,0,0,0.3)",
+  width: "220px"
+    }}
+    onMouseEnter={(e) => {
+      e.target.style.transform = "scale(1.05)";
+      e.target.style.background = "linear-gradient(135deg, #9b59b6, ##9b59b6)";
+    }}
+    onMouseLeave={(e) => {
+      e.target.style.transform = "scale(1)";
+      e.target.style.background = "linear-gradient(135deg, #d4af37, #b8962e)";
+    }}
+  >
+    Meus agendamentos
+  </button>
+</div>
                 <input
                   type="date"
                   min={new Date().toISOString().split("T")[0]}
