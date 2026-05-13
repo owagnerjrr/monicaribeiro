@@ -86,20 +86,45 @@ export default function Cliente() {
       const horaFormatada = `${i.toString().padStart(2, "0")}:00`;
 
       // 🔥 ADICIONADO (bloqueia horário já agendado)
-      const jaAgendado = agendamentos.find(a =>
-        a.data === data && a.hora === horaFormatada
-      );
-      if (jaAgendado) continue;
+      const gerarHorarios = (data) => {
 
-      if (data === hoje) {
-        if (i <= agora.getHours()) continue;
-      }
+  const bloqueado = bloqueios.find(b => data >= b.inicio && data <= b.fim);
+  if (bloqueado) return [];
 
-      lista.push(horaFormatada);
-    }
+  const dia = new Date(data + "T00:00:00").getDay();
+  if (dia === 0) return [];
 
-    return lista;
-  };
+  const inicio = 9;
+  const fim = dia === 6 ? 12 : 18;
+
+  const agora = new Date();
+  const hoje = new Date().toISOString().split("T")[0];
+
+  // 🔥 NOVO BLOQUEIO DO DIA
+  const totalNoDia = agendamentos.filter(a => a.data === data);
+
+  if (totalNoDia.length >= 5) {
+    return []; // 🔥 BLOQUEIA TODOS HORÁRIOS
+  }
+
+  const lista = [];
+
+  for (let i = inicio; i < fim; i++) {
+    const horaFormatada = `${i.toString().padStart(2, "0")}:00`;
+
+    const jaAgendado = agendamentos.find(a =>
+      a.data === data && a.hora === horaFormatada
+    );
+
+    if (jaAgendado) continue;
+
+    if (data === hoje && i <= agora.getHours()) continue;
+
+    lista.push(horaFormatada);
+  }
+
+  return lista;
+      };
 
   useEffect(() => {
     if (dataSelecionada) {
@@ -486,4 +511,6 @@ style={{
 
     </div>
   );
+}
+}
 }
