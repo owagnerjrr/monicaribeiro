@@ -43,7 +43,7 @@ import velasDesc from "../assets/velas-descricao.jpg";
 import relaxanteDesc from "../assets/relaxante-descricao.jpg";
 /* 🔥 FIM */
 
-const telefone = "5535998598071";
+const telefone = "5535999134301";
 
 export default function Cliente() {
 
