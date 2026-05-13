@@ -50,6 +50,9 @@ export default function Cliente() {
   const [servicos, setServicos] = useState([]);
   const [bloqueios, setBloqueios] = useState([]);
 
+  // 🔥 ADICIONADO
+  const [agendamentos, setAgendamentos] = useState([]);
+
   const [descricaoAberta, setDescricaoAberta] = useState(null);
 
   const [modalAgenda, setModalAgenda] = useState(false);
@@ -82,6 +85,12 @@ export default function Cliente() {
     for (let i = inicio; i < fim; i++) {
       const horaFormatada = `${i.toString().padStart(2, "0")}:00`;
 
+      // 🔥 ADICIONADO (bloqueia horário já agendado)
+      const jaAgendado = agendamentos.find(a =>
+        a.data === data && a.hora === horaFormatada
+      );
+      if (jaAgendado) continue;
+
       if (data === hoje) {
         if (i <= agora.getHours()) continue;
       }
@@ -97,7 +106,7 @@ export default function Cliente() {
       setHorariosDisponiveis(gerarHorarios(dataSelecionada));
       setHorarioSelecionado("");
     }
-  }, [dataSelecionada, bloqueios]);
+  }, [dataSelecionada, bloqueios, agendamentos]); // 🔥 ALTERADO
 
   // 🔥 PREÇOS TEMPO REAL
   useEffect(() => {
@@ -142,6 +151,15 @@ export default function Cliente() {
   useEffect(() => {
     const unsubscribe = onSnapshot(collection(db, "bloqueios"), (snapshot) => {
       setBloqueios(snapshot.docs.map(doc => doc.data()));
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  // 🔥 ADICIONADO (escuta agendamentos)
+  useEffect(() => {
+    const unsubscribe = onSnapshot(collection(db, "appointments"), (snapshot) => {
+      setAgendamentos(snapshot.docs.map(doc => doc.data()));
     });
 
     return () => unsubscribe();
