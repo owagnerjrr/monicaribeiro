@@ -132,12 +132,12 @@ export default function Cliente() {
         { nome: "MASSAGEM COM VELAS", preco: "R$135,00", img: velas, desc: velasDesc },
         { nome: "RELAXANTE", preco: "R$110,00", img: relaxante, desc: relaxanteDesc },
         { nome: "BAMBUTERAPIA", preco: "R$120,00", img: bambu, desc: bambuDesc },
-        { nome: "DRENAGEM LINFÁTICA", preco: "R$120,00", img: drenagemlinfatica, desc: drenagemlinfaticaDesc },
+        { nome: "DRENAGEM LINFÁTICA", preco: "R$120,00", img: drenagemlinfatica, desc: reflexologiaDesc },
         { nome: "GOMAGE CORPORAL", preco: "R$110,00", img: gomagecorporal, desc: gomageDesc },
         { nome: "REALINHAMENTO DOS CHAKRAS COM CONE HINDU", preco: "R$125,00", img: chakrahindu, desc: chakrahinduDesc },
         { nome: "TERAPÊUTICA", preco: "R$145,00", img: terapeutica, desc: terapeuticaDesc },
         { nome: "SHIATSU", preco: "R$130,00", img: shiatsu, desc: shiatsuDesc },
-        { nome: "DESPORTIVA", preco: "R$145,00", img: desportiva, desc: desportivaDesc },
+        { nome: "DESPORTIVA", preco: "R$145,00", img: desportiva, desc: reflexologiaDesc },
         { nome: "CONE HINDU", preco: "R$115,00", img: conehindu, desc: conehinduDesc },
         { nome: "REFLEXOLOGIA", preco: "R$80,00", img: reflexologia, desc: reflexologiaDesc },
       ];
@@ -400,7 +400,7 @@ style={{
 
                             const msg = `Olá, me chamo ${nome}%0A📞 ${telefoneCliente}%0A🧘 Serviço: ${servicoSelecionado.nome}%0A💰 Valor: ${servicoSelecionado.preco}%0A📅 Data: ${dataSelecionada}%0A⏰ Horário: ${horarioSelecionado}%0A%0AEstou ciente que o agendamento será confirmado após pagamento de 50%.`;
 
-                            window.open(`https://api.whatsapp.com/send?phone=${telefone}&text=${msg}`, "_blank");
+                            window.open(`https://wa.me/${telefone}?text=${msg}`, "_blank");
                           }}
                           style={{
                             background: "#22c55e",
