@@ -164,6 +164,11 @@ export default function Cliente() {
 
     return () => unsubscribe();
   }, []);
+
+  const formatarData = (data) => {
+  const [ano, mes, dia] = data.split("-");
+  return `${dia}/${mes}/${ano}`;
+};
   
   const salvarAgendamento = async () => {
     const snapshot = await getDocs(collection(db, "appointments"));
@@ -178,12 +183,19 @@ export default function Cliente() {
       return false;
     }
 
+    const totalNoDia = lista.filter(a => a.data === dataSelecionada);
+
+if (totalNoDia.length >= 5) {
+  alert("Limite de atendimentos atingido para este dia.");
+  return false;
+}
+
     await addDoc(collection(db, "appointments"), {
       nome,
       telefone: telefoneCliente,
       servico: servicoSelecionado.nome,
       preco: servicoSelecionado.preco,
-      data: dataSelecionada,
+      data: formatarData(dataSelecionada),
       hora: horarioSelecionado,
       criadoEm: new Date()
     });
@@ -278,7 +290,12 @@ export default function Cliente() {
             {step === "data" && (
               <div style={{ textAlign: "center" }}>
                 <h2>Escolha uma data</h2>
-
+<button
+  onClick={() => window.location.href = "/minhas-marcacoes"}
+  className="btn-meus"
+>
+  Meus agendamentos
+</button>
                 <input
                   type="date"
                   min={new Date().toISOString().split("T")[0]}

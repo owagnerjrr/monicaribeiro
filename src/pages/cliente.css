@@ -419,6 +419,10 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+.modal h2 {
+  color: white !important;
+}
+
 .pagina {
   width: 100%;
 }
