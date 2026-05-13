@@ -400,7 +400,7 @@ style={{
 
                             const msg = `Olá, me chamo ${nome}%0A📞 ${telefoneCliente}%0A🧘 Serviço: ${servicoSelecionado.nome}%0A💰 Valor: ${servicoSelecionado.preco}%0A📅 Data: ${dataSelecionada}%0A⏰ Horário: ${horarioSelecionado}%0A%0AEstou ciente que o agendamento será confirmado após pagamento de 50%.`;
 
-                            window.open(`https://wa.me/${telefone}?text=${msg}`, "_blank");
+                            window.open(`https://api.whatsapp.com/send?phone=${telefone}&text=${msg}`, "_blank");
                           }}
                           style={{
                             background: "#22c55e",
