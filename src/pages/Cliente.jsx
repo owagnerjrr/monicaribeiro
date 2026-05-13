@@ -183,7 +183,10 @@ export default function Cliente() {
       return false;
     }
 
-    const totalNoDia = lista.filter(a => a.data === dataSelecionada);
+    const totalNoDia = lista.filter(a =>
+  a.data === dataSelecionada ||
+  a.data === formatarData(dataSelecionada)
+);
 
 if (totalNoDia.length >= 5) {
   alert("Limite de atendimentos atingido para este dia.");
