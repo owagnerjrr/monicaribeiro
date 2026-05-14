@@ -132,7 +132,7 @@ export default function Cliente() {
         { nome: "MASSAGEM COM VELAS", preco: "R$135,00", img: velas, desc: velasDesc },
         { nome: "RELAXANTE", preco: "R$110,00", img: relaxante, desc: relaxanteDesc },
         { nome: "BAMBUTERAPIA", preco: "R$120,00", img: bambu, desc: bambuDesc },
-        { nome: "DRENAGEM LINFÁTICA", preco: "R$120,00", img: drenagemlinfatica, desc: drenagemlinfaticaDesc },
+        { nome: "DRENAGEM LINFÁTICA", preco: "R$120,00", img: drenagemlinfatica, desc: reflexologiaDesc },
         { nome: "GOMAGE CORPORAL", preco: "R$110,00", img: gomagecorporal, desc: gomageDesc },
         { nome: "REALINHAMENTO DOS CHAKRAS COM CONE HINDU", preco: "R$125,00", img: chakrahindu, desc: chakrahinduDesc },
         { nome: "TERAPÊUTICA", preco: "R$145,00", img: terapeutica, desc: terapeuticaDesc },
