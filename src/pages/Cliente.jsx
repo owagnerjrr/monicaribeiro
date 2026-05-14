@@ -70,7 +70,14 @@ export default function Cliente() {
 
   const gerarHorarios = (data) => {
 
-  const bloqueado = bloqueios.find(b => data >= b.inicio && data <= b.fim);
+const dataAtual = new Date(data + "T12:00:00");
+
+const bloqueado = bloqueios.find(b => {
+  const inicio = new Date(b.inicio + "T12:00:00");
+  const fim = new Date(b.fim + "T12:00:00");
+
+  return dataAtual >= inicio && dataAtual <= fim;
+});
   if (bloqueado) return [];
 
   const dia = new Date(data + "T00:00:00").getDay();
