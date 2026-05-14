@@ -431,7 +431,7 @@ Estou ciente que o agendamento será confirmado após pagamento de 50%.`;
 
 const msg = encodeURIComponent(mensagem);
 
-window.open(`https://api.whatsapp.com/send?phone=${telefone}&text=${msg}`, "_blank");
+window.location.href = `https://api.whatsapp.com/send?phone=${telefone}&text=${msg}`;
                           }}
                           style={{
                             background: "#22c55e",
