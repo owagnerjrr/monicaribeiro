@@ -420,9 +420,18 @@ style={{
                             const sucesso = await salvarAgendamento();
                             if (!sucesso) return;
 
-                            const msg = `Olá, me chamo ${nome}%0A📞 ${telefoneCliente}%0A🧘 Serviço: ${servicoSelecionado.nome}%0A💰 Valor: ${servicoSelecionado.preco}%0A📅 Data: ${dataSelecionada}%0A⏰ Horário: ${horarioSelecionado}%0A%0AEstou ciente que o agendamento será confirmado após pagamento de 50%.`;
+                            const mensagem = `Olá, me chamo ${nome}
+📞 ${telefoneCliente}
+🧘 Serviço: ${servicoSelecionado.nome}
+💰 Valor: ${servicoSelecionado.preco}
+📅 Data: ${dataSelecionada}
+⏰ Horário: ${horarioSelecionado}
 
-                            window.open(`https://wa.me/${telefone}?text=${msg}`, "_blank");
+Estou ciente que o agendamento será confirmado após pagamento de 50%.`;
+
+const msg = encodeURIComponent(mensagem);
+
+window.open(`https://api.whatsapp.com/send?phone=${telefone}&text=${msg}`, "_blank");
                           }}
                           style={{
                             background: "#22c55e",
