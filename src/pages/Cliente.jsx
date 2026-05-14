@@ -82,6 +82,18 @@ export default function Cliente() {
   const agora = new Date();
   const hoje = new Date().toISOString().split("T")[0];
 
+  // 🔥 REGRA DE 2 HORAS
+const horaAtual = agora.getHours();
+const minutos = agora.getMinutes();
+
+let limite = horaAtual + 2;
+
+if (minutos === 0) {
+  limite = horaAtual + 2;
+} else {
+  limite = horaAtual + 2;
+}
+
   // 🔥 BLOQUEIA DIA COM 5 AGENDAMENTOS
   const totalNoDia = agendamentos.filter(a =>
     a.data === data || a.data === formatarData(data)
@@ -96,6 +108,7 @@ export default function Cliente() {
   const lista = [];
 
   for (let i = inicio; i < fim; i++) {
+    if (data === hoje && i < limite) continue;
     const horaFormatada = `${i.toString().padStart(2, "0")}:00`;
 
     const jaAgendado = agendamentos.find(a =>
