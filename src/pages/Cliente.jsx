@@ -102,9 +102,13 @@ if (minutos === 0) {
 }
 
   // 🔥 BLOQUEIA DIA COM 5 AGENDAMENTOS
-  const totalNoDia = agendamentos.filter(a =>
-    a.data === data || a.data === formatarData(data)
-  );
+const totalNoDia = agendamentos.filter(a => {
+  const dataFormatada = new Date(a.data.split("/").reverse().join("-"))
+    .toISOString()
+    .split("T")[0];
+
+  return dataFormatada === data;
+});
 
   if (totalNoDia.length >= 5) {
     return [];
