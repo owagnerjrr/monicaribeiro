@@ -44,16 +44,26 @@ export default function Admin() {
 
   }, []);
 
+  // 🔥 FORMATAR DATA (BR)
+  const formatarData = (data) => {
+    return new Date(data + "T00:00:00").toLocaleDateString("pt-BR");
+  };
+
+  // 🔥 ORDENAR DATAS
+  const datasOrdenadas = Object.keys(
+    agendamentos.reduce((acc, item) => {
+      const data = item.data;
+      if (!acc[data]) acc[data] = [];
+      acc[data].push(item);
+      return acc;
+    }, {})
+  ).sort((a, b) => new Date(a) - new Date(b));
+
   // 🔥 AGRUPAR POR DATA
   const agendamentosPorData = agendamentos.reduce((acc, item) => {
     const data = item.data;
-
-    if (!acc[data]) {
-      acc[data] = [];
-    }
-
+    if (!acc[data]) acc[data] = [];
     acc[data].push(item);
-
     return acc;
   }, {});
 
@@ -135,8 +145,8 @@ export default function Admin() {
             Agendamentos
           </h2>
 
-          {/* 🔥 AQUI ESTÁ A MUDANÇA PRINCIPAL */}
-          {Object.keys(agendamentosPorData).map((data) => (
+          {/* 🔥 AGORA ORDENADO + FORMATADO */}
+          {datasOrdenadas.map((data) => (
             <div key={data}>
 
               <h3 style={{
@@ -146,7 +156,7 @@ export default function Admin() {
                 borderRadius: "10px",
                 marginTop: "15px"
               }}>
-                📅 {data}
+                📅 {formatarData(data)}
               </h3>
 
               {agendamentosPorData[data].map(a => (
