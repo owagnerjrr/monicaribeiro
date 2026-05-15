@@ -44,6 +44,19 @@ export default function Admin() {
 
   }, []);
 
+  // 🔥 AGRUPAR POR DATA
+  const agendamentosPorData = agendamentos.reduce((acc, item) => {
+    const data = item.data;
+
+    if (!acc[data]) {
+      acc[data] = [];
+    }
+
+    acc[data].push(item);
+
+    return acc;
+  }, {});
+
   const excluir = async (id) => {
     await deleteDoc(doc(db, "appointments", id));
   };
@@ -92,28 +105,24 @@ export default function Admin() {
           <source src="/video.mp4" type="video/mp4" />
         </video>
 
-        <div
-          style={{
-            maxWidth: "900px",
-            margin: "0 auto",
-            padding: "20px",
-            color: "#fff",
-            width: "100%",
-            position: "relative",
-            zIndex: 10
-          }}
-        >
+        <div style={{
+          maxWidth: "900px",
+          margin: "0 auto",
+          padding: "20px",
+          color: "#fff",
+          width: "100%",
+          position: "relative",
+          zIndex: 10
+        }}>
 
-          <h1
-            style={{
-              textAlign: "center",
-              marginBottom: "30px",
-              background: "rgba(0, 0, 0, 0.65)",
-              padding: "15px",
-              borderRadius: "15px",
-              backdropFilter: "blur(6px)"
-            }}
-          >
+          <h1 style={{
+            textAlign: "center",
+            marginBottom: "30px",
+            background: "rgba(0, 0, 0, 0.65)",
+            padding: "15px",
+            borderRadius: "15px",
+            backdropFilter: "blur(6px)"
+          }}>
             Administração
           </h1>
 
@@ -126,43 +135,64 @@ export default function Admin() {
             Agendamentos
           </h2>
 
-          {agendamentos.map(a => (
-            <div key={a.id} style={{
-              background: "rgba(44, 26, 46, 0.95)",
-              padding: "20px",
-              borderRadius: "20px",
-              marginBottom: "15px"
-            }}>
-              <p><strong>{a.servico}</strong></p>
-              <p>💰 {a.preco}</p>
-              <p>📅 {a.data}</p>
-              <p>⏰ {a.hora}</p>
-              <p>👤 {a.nome}</p>
+          {/* 🔥 AQUI ESTÁ A MUDANÇA PRINCIPAL */}
+          {Object.keys(agendamentosPorData).map((data) => (
+            <div key={data}>
 
-              <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
-                <button onClick={() => editarHorario(a.id)} style={{
-                  background: "#9333ea",
-                  padding: "10px",
-                  borderRadius: "10px",
-                  color: "#fff",
-                  flex: 1
-                }}>
-                  Editar
-                </button>
+              <h3 style={{
+                background: "#ccc",
+                color: "#000",
+                padding: "10px",
+                borderRadius: "10px",
+                marginTop: "15px"
+              }}>
+                📅 {data}
+              </h3>
 
-                <button onClick={() => excluir(a.id)} style={{
-                  background: "#ef4444",
-                  padding: "10px",
-                  borderRadius: "10px",
-                  color: "#fff",
-                  flex: 1
+              {agendamentosPorData[data].map(a => (
+                <div key={a.id} style={{
+                  background: "rgba(44, 26, 46, 0.95)",
+                  padding: "20px",
+                  borderRadius: "20px",
+                  marginBottom: "10px"
                 }}>
-                  Excluir
-                </button>
-              </div>
+                  <p><strong>{a.servico}</strong></p>
+                  <p>💰 {a.preco}</p>
+                  <p>⏰ {a.hora}</p>
+                  <p>👤 {a.nome}</p>
+
+                  <div style={{
+                    display: "flex",
+                    gap: "10px",
+                    marginTop: "10px"
+                  }}>
+                    <button onClick={() => editarHorario(a.id)} style={{
+                      background: "#9333ea",
+                      padding: "10px",
+                      borderRadius: "10px",
+                      color: "#fff",
+                      flex: 1
+                    }}>
+                      Editar
+                    </button>
+
+                    <button onClick={() => excluir(a.id)} style={{
+                      background: "#ef4444",
+                      padding: "10px",
+                      borderRadius: "10px",
+                      color: "#fff",
+                      flex: 1
+                    }}>
+                      Excluir
+                    </button>
+                  </div>
+                </div>
+              ))}
+
             </div>
           ))}
 
+          {/* BLOQUEIOS */}
           <h2 style={{
             marginTop: "30px",
             background: "rgba(0,0,0,0.6)",
@@ -200,27 +230,22 @@ export default function Admin() {
               borderRadius: "10px",
               marginBottom: "5px",
               display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center"
+              justifyContent: "space-between"
             }}>
               <span>🚫 {b.inicio} até {b.fim}</span>
 
-              <button
-                onClick={() => removerBloqueio(b.id)}
-                style={{
-                  background: "#ef4444",
-                  color: "#fff",
-                  padding: "6px 12px",
-                  borderRadius: "8px",
-                  border: "none",
-                  cursor: "pointer"
-                }}
-              >
+              <button onClick={() => removerBloqueio(b.id)} style={{
+                background: "#ef4444",
+                color: "#fff",
+                padding: "6px 12px",
+                borderRadius: "8px"
+              }}>
                 Remover
               </button>
             </div>
           ))}
 
+          {/* PREÇOS */}
           <h2 style={{
             marginTop: "30px",
             background: "rgba(0,0,0,0.6)",
@@ -256,7 +281,7 @@ export default function Admin() {
             </select>
 
             <input
-              placeholder="Novo preço (ex: R$150,00)"
+              placeholder="Novo preço"
               value={novoPreco}
               onChange={(e) => setNovoPreco(e.target.value)}
               style={{
