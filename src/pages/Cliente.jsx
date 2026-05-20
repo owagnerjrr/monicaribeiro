@@ -46,6 +46,7 @@ import drenagemDesc from "../assets/drenagemlinfatica-descricao.jpg";
 /* 🔥 FIM */
 
 const telefone = "5535999134301";
+const pixCnpj = "29.367.384/0001-67";
 
 export default function Cliente() {
 
@@ -484,6 +485,25 @@ style={{
                           Observação: o agendamento só será computado após o pagamento de 50% até 1 hora antes da massagem.
                         </p>
 
+                        <div
+                          style={{
+                            background: "#f7f3ff",
+                            border: "1px solid #d8c6ff",
+                            borderRadius: "10px",
+                            color: "#3f2a56",
+                            fontSize: "0.9rem",
+                            lineHeight: "1.45",
+                            marginBottom: "12px",
+                            padding: "10px",
+                          }}
+                        >
+                          <strong>Pix para pagamento:</strong>
+                          <br />
+                          CNPJ: {pixCnpj}
+                          <br />
+                          Após pagar, envie o comprovante para confirmar o agendamento.
+                        </div>
+
                         <button
                           disabled={!nome || !telefoneCliente}
                           onClick={async () => {
@@ -497,7 +517,12 @@ style={{
 📅 Data: ${formatarDataBR(dataSelecionada)}
 ⏰ Horário: ${horarioSelecionado}
 
-O agendamento só será computado após o pagamento de 50% até 1 hora antes da massagem.`;
+O agendamento só será computado após o pagamento de 50% até 1 hora antes da massagem.
+
+Pix para pagamento:
+CNPJ: ${pixCnpj}
+
+Após pagar, envio o comprovante por aqui para confirmar o agendamento.`;
 
 const msg = encodeURIComponent(mensagem);
 
