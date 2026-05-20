@@ -51,6 +51,7 @@ export default function Cliente() {
 
   const [servicos, setServicos] = useState([]);
   const [bloqueios, setBloqueios] = useState([]);
+  const [pausas, setPausas] = useState([]);
 
   // 🔥 ADICIONADO
   const [agendamentos, setAgendamentos] = useState([]);
@@ -92,6 +93,26 @@ export default function Cliente() {
 
     const [ano, mes, dia] = dataNormalizada.split("-");
     return `${dia}/${mes}/${ano}`;
+  };
+
+  const horarioParaMinutos = (horario) => {
+    const [hora, minuto] = horario.split(":").map(Number);
+    return hora * 60 + minuto;
+  };
+
+  const horarioEmPausa = (data, horario) => {
+    const horarioMinutos = horarioParaMinutos(horario);
+
+    return pausas.some(p => {
+      if (normalizarData(p.data) !== data || !p.inicio || !p.fim) return false;
+
+      return horarioMinutos >= horarioParaMinutos(p.inicio) &&
+        horarioMinutos < horarioParaMinutos(p.fim);
+    });
+  };
+
+  const temPausaNoDia = (data) => {
+    return pausas.some(p => normalizarData(p.data) === data);
   };
 
   const gerarHorarios = (data) => {
@@ -141,6 +162,7 @@ const totalNoDia = agendamentos.filter(a => {
     );
 
     if (jaAgendado) continue;
+    if (horarioEmPausa(data, horaFormatada)) continue;
 
     if (data === hoje && i <= agora.getHours()) continue;
 
@@ -151,6 +173,25 @@ const totalNoDia = agendamentos.filter(a => {
       };
 
   const horariosDisponiveis = dataSelecionada ? gerarHorarios(dataSelecionada) : [];
+  const dataSelecionadaBloqueada = dataSelecionada && bloqueios.some(b => {
+    const dataAtual = new Date(dataSelecionada + "T12:00:00");
+    const inicio = new Date(normalizarData(b.inicio) + "T12:00:00");
+    const fim = new Date(normalizarData(b.fim) + "T12:00:00");
+
+    return dataAtual >= inicio && dataAtual <= fim;
+  });
+  const dataSelecionadaDomingo = dataSelecionada &&
+    new Date(dataSelecionada + "T00:00:00").getDay() === 0;
+  const totalNoDiaSelecionado = agendamentos.filter(a =>
+    normalizarData(a.data) === dataSelecionada
+  ).length;
+  const mensagemSemHorarios = dataSelecionadaBloqueada || dataSelecionadaDomingo
+    ? "Não atenderemos neste dia"
+    : totalNoDiaSelecionado >= 5
+      ? "Agenda cheia neste dia"
+      : temPausaNoDia(dataSelecionada)
+        ? "Horário de pausa ou almoço neste dia"
+        : "Não há horários disponíveis neste dia";
 
   // 🔥 PREÇOS TEMPO REAL
   useEffect(() => {
@@ -195,6 +236,14 @@ const totalNoDia = agendamentos.filter(a => {
   useEffect(() => {
     const unsubscribe = onSnapshot(collection(db, "bloqueios"), (snapshot) => {
       setBloqueios(snapshot.docs.map(doc => doc.data()));
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = onSnapshot(collection(db, "pausas"), (snapshot) => {
+      setPausas(snapshot.docs.map(doc => doc.data()));
     });
 
     return () => unsubscribe();
@@ -390,7 +439,7 @@ style={{
             {step === "horario" && (
               <div style={{ textAlign: "center" }}>
                 {horariosDisponiveis.length === 0 ? (
-                  <p>Não atenderemos neste dia</p>
+                  <p>{mensagemSemHorarios}</p>
                 ) : (
                   <>
                     <p>Escolha um horário:</p>

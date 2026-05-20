@@ -41,10 +41,15 @@ export default function Admin() {
 
   const [agendamentos, setAgendamentos] = useState([]);
   const [bloqueios, setBloqueios] = useState([]);
+  const [pausas, setPausas] = useState([]);
   const [servicos, setServicos] = useState([]);
 
   const [dataInicio, setDataInicio] = useState("");
   const [dataFim, setDataFim] = useState("");
+  const [pausaData, setPausaData] = useState("");
+  const [pausaInicio, setPausaInicio] = useState("");
+  const [pausaFim, setPausaFim] = useState("");
+  const [pausaMotivo, setPausaMotivo] = useState("Almoço");
 
   const [servicoSelecionado, setServicoSelecionado] = useState("");
   const [novoPreco, setNovoPreco] = useState("");
@@ -75,7 +80,11 @@ export default function Admin() {
       setBloqueios(snap.docs.map(d => ({ id: d.id, ...d.data() })));
     });
 
-    const unsub3 = onSnapshot(collection(db, "servicos"), (snap) => {
+    const unsub3 = onSnapshot(collection(db, "pausas"), (snap) => {
+      setPausas(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+    });
+
+    const unsub4 = onSnapshot(collection(db, "servicos"), (snap) => {
       setServicos(snap.docs.map(d => ({ id: d.id, ...d.data() })));
     });
 
@@ -83,6 +92,7 @@ export default function Admin() {
       unsub1();
       unsub2();
       unsub3();
+      unsub4();
     };
 
   }, []);
@@ -132,6 +142,26 @@ export default function Admin() {
 
   const removerBloqueio = async (id) => {
     await deleteDoc(doc(db, "bloqueios", id));
+  };
+
+  const adicionarPausa = async () => {
+    if (!pausaData || !pausaInicio || !pausaFim) return;
+
+    await addDoc(collection(db, "pausas"), {
+      data: formatarData(pausaData),
+      inicio: pausaInicio,
+      fim: pausaFim,
+      motivo: pausaMotivo || "Pausa"
+    });
+
+    setPausaData("");
+    setPausaInicio("");
+    setPausaFim("");
+    setPausaMotivo("Almoço");
+  };
+
+  const removerPausa = async (id) => {
+    await deleteDoc(doc(db, "pausas", id));
   };
 
   const alterarPreco = async (id, preco) => {
@@ -283,6 +313,64 @@ export default function Admin() {
               <span>🚫 {formatarData(b.inicio)} até {formatarData(b.fim)}</span>
 
               <button onClick={() => removerBloqueio(b.id)} style={{
+                background: "#ef4444",
+                color: "#fff",
+                padding: "6px 12px",
+                borderRadius: "8px"
+              }}>
+                Remover
+              </button>
+            </div>
+          ))}
+
+          <h2 style={{
+            marginTop: "30px",
+            background: "rgba(0,0,0,0.6)",
+            padding: "8px 12px",
+            borderRadius: "10px",
+            display: "inline-block"
+          }}>
+            Pausa do dia
+          </h2>
+
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))",
+            gap: "10px",
+            marginBottom: "15px",
+            background: "rgba(0,0,0,0.7)",
+            padding: "15px",
+            borderRadius: "15px"
+          }}>
+            <input type="date" value={pausaData} onChange={(e) => setPausaData(e.target.value)} style={{ padding: "12px", borderRadius: "10px" }} />
+            <input type="time" value={pausaInicio} onChange={(e) => setPausaInicio(e.target.value)} style={{ padding: "12px", borderRadius: "10px" }} />
+            <input type="time" value={pausaFim} onChange={(e) => setPausaFim(e.target.value)} style={{ padding: "12px", borderRadius: "10px" }} />
+            <input placeholder="Motivo" value={pausaMotivo} onChange={(e) => setPausaMotivo(e.target.value)} style={{ padding: "12px", borderRadius: "10px" }} />
+
+            <button onClick={adicionarPausa} style={{
+              background: "#38bdf8",
+              padding: "12px",
+              borderRadius: "10px",
+              color: "#fff",
+              fontWeight: "bold"
+            }}>
+              Adicionar pausa
+            </button>
+          </div>
+
+          {pausas.map(p => (
+            <div key={p.id} style={{
+              background: "rgba(20, 60, 80, 0.9)",
+              padding: "10px",
+              borderRadius: "10px",
+              marginBottom: "5px",
+              display: "flex",
+              justifyContent: "space-between",
+              gap: "10px"
+            }}>
+              <span>⏸ {formatarData(p.data)} - {p.inicio} até {p.fim} ({p.motivo || "Pausa"})</span>
+
+              <button onClick={() => removerPausa(p.id)} style={{
                 background: "#ef4444",
                 color: "#fff",
                 padding: "6px 12px",
