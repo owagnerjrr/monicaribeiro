@@ -377,7 +377,7 @@ if (totalNoDia.length >= 5) {
             }}
           >
 
-            <h3 style={{ textAlign: "center" }}>{servicoSelecionado?.nome}</h3>
+            <h3 style={{ textAlign: "center", color: "#fff" }}>{servicoSelecionado?.nome}</h3>
 
             {step === "data" && (
               <div style={{ textAlign: "center" }}>
@@ -441,10 +441,19 @@ style={{
             {step === "horario" && (
               <div style={{ textAlign: "center" }}>
                 {horariosDisponiveis.length === 0 ? (
-                  <p>{mensagemSemHorarios}</p>
+                  <p style={{ color: "#fff" }}>{mensagemSemHorarios}</p>
                 ) : (
                   <>
-                    <p>Escolha um horário:</p>
+                    <p
+                      style={{
+                        color: "#fff",
+                        fontWeight: "600",
+                        marginBottom: "12px",
+                        textShadow: "0 1px 3px rgba(0,0,0,0.45)",
+                      }}
+                    >
+                      Escolha um horário:
+                    </p>
 
                     <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "8px" }}>
                      {!horarioSelecionado && horariosDisponiveis.map((h, i) => (
@@ -477,10 +486,11 @@ style={{
 
                         <p
                           style={{
-                            color: "#444",
+                            color: "#fff",
                             fontSize: "0.9rem",
                             lineHeight: "1.4",
                             margin: "0 0 12px",
+                            textShadow: "0 1px 3px rgba(0,0,0,0.55)",
                           }}
                         >
                           Observação: o agendamento só será computado após o pagamento de 50% até 1 hora antes da massagem.
