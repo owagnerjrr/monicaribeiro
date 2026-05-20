@@ -6,6 +6,15 @@ export default function MinhasMarcacoes() {
   const [telefone, setTelefone] = useState("");
   const [agendamentos, setAgendamentos] = useState([]);
 
+  const formatarData = (data) => {
+    if (!data) return "";
+
+    if (data.includes("/")) return data;
+
+    const [ano, mes, dia] = data.split("T")[0].split("-");
+    return `${dia}/${mes}/${ano}`;
+  };
+
   const buscarAgendamentos = async () => {
     const snapshot = await getDocs(collection(db, "appointments"));
 
@@ -110,7 +119,7 @@ export default function MinhasMarcacoes() {
             textAlign: "left"
           }}>
             <h3 style={{ color: "#4b2c52" }}>{a.servico}</h3>
-            <p>📅 {a.data}</p>
+            <p>📅 {formatarData(a.data)}</p>
             <p>⏰ {a.hora}</p>
 
             <button

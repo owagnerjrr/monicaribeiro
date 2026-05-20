@@ -45,23 +45,38 @@ export default function Admin() {
   }, []);
 
   // 🔥 FORMATAR DATA (BR)
+  const normalizarData = (data) => {
+    if (!data) return "";
+
+    if (data.includes("/")) {
+      const [dia, mes, ano] = data.split("/");
+      return `${ano}-${mes.padStart(2, "0")}-${dia.padStart(2, "0")}`;
+    }
+
+    return data.split("T")[0];
+  };
+
   const formatarData = (data) => {
-    return new Date(data + "T00:00:00").toLocaleDateString("pt-BR");
+    const dataNormalizada = normalizarData(data);
+    if (!dataNormalizada) return "";
+
+    const [ano, mes, dia] = dataNormalizada.split("-");
+    return `${dia}/${mes}/${ano}`;
   };
 
   // 🔥 ORDENAR DATAS
   const datasOrdenadas = Object.keys(
     agendamentos.reduce((acc, item) => {
-      const data = item.data;
+      const data = normalizarData(item.data);
       if (!acc[data]) acc[data] = [];
       acc[data].push(item);
       return acc;
     }, {})
-  ).sort((a, b) => new Date(a) - new Date(b));
+  ).sort((a, b) => new Date(a + "T12:00:00") - new Date(b + "T12:00:00"));
 
   // 🔥 AGRUPAR POR DATA
   const agendamentosPorData = agendamentos.reduce((acc, item) => {
-    const data = item.data;
+    const data = normalizarData(item.data);
     if (!acc[data]) acc[data] = [];
     acc[data].push(item);
     return acc;
@@ -84,8 +99,8 @@ export default function Admin() {
     if (!dataInicio || !dataFim) return;
 
     await addDoc(collection(db, "bloqueios"), {
-      inicio: dataInicio,
-      fim: dataFim
+      inicio: formatarData(dataInicio),
+      fim: formatarData(dataFim)
     });
 
     setDataInicio("");
@@ -242,7 +257,7 @@ export default function Admin() {
               display: "flex",
               justifyContent: "space-between"
             }}>
-              <span>🚫 {b.inicio} até {b.fim}</span>
+              <span>🚫 {formatarData(b.inicio)} até {formatarData(b.fim)}</span>
 
               <button onClick={() => removerBloqueio(b.id)} style={{
                 background: "#ef4444",

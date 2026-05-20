@@ -86,13 +86,21 @@ export default function Cliente() {
     return data.split("T")[0];
   };
 
+  const formatarDataBR = (data) => {
+    const dataNormalizada = normalizarData(data);
+    if (!dataNormalizada) return "";
+
+    const [ano, mes, dia] = dataNormalizada.split("-");
+    return `${dia}/${mes}/${ano}`;
+  };
+
   const gerarHorarios = (data) => {
 
 const dataAtual = new Date(data + "T12:00:00");
 
 const bloqueado = bloqueios.find(b => {
-  const inicio = new Date(b.inicio + "T12:00:00");
-  const fim = new Date(b.fim + "T12:00:00");
+  const inicio = new Date(normalizarData(b.inicio) + "T12:00:00");
+  const fim = new Date(normalizarData(b.fim) + "T12:00:00");
 
   return dataAtual >= inicio && dataAtual <= fim;
 });
@@ -228,7 +236,7 @@ if (totalNoDia.length >= 5) {
       telefone: telefoneCliente,
       servico: servicoSelecionado.nome,
       preco: servicoSelecionado.preco,
-      data: dataSelecionada,
+      data: formatarDataBR(dataSelecionada),
       hora: horarioSelecionado,
       criadoEm: new Date()
     });
@@ -426,7 +434,7 @@ style={{
 📞 ${telefoneCliente}
 🧘 Serviço: ${servicoSelecionado.nome}
 💰 Valor: ${servicoSelecionado.preco}
-📅 Data: ${dataSelecionada}
+📅 Data: ${formatarDataBR(dataSelecionada)}
 ⏰ Horário: ${horarioSelecionado}
 
 Estou ciente que o agendamento será confirmado após pagamento de 50%.`;
