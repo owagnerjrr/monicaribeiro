@@ -473,6 +473,17 @@ style={{
                           style={{ width: "100%", padding: "10px", borderRadius: "10px", marginBottom: "10px" }}
                         />
 
+                        <p
+                          style={{
+                            color: "#444",
+                            fontSize: "0.9rem",
+                            lineHeight: "1.4",
+                            margin: "0 0 12px",
+                          }}
+                        >
+                          Observação: o agendamento só será computado após o pagamento de 50% até 1 hora antes da massagem.
+                        </p>
+
                         <button
                           disabled={!nome || !telefoneCliente}
                           onClick={async () => {
