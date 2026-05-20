@@ -43,6 +43,7 @@ import velasDesc from "../assets/velas-descricao.jpg";
 import relaxanteDesc from "../assets/relaxante-descricao.jpg";
 import desportivaDesc from "../assets/desportiva-descricao.jpg";
 import drenagemDesc from "../assets/drenagemlinfatica-descricao.jpg";
+import pixQrCode from "../assets/pix.jpg";
 /* 🔥 FIM */
 
 const telefone = "5535999134301";
@@ -487,10 +488,10 @@ style={{
 
                         <div
                           style={{
-                            background: "#f7f3ff",
-                            border: "1px solid #d8c6ff",
+                            background: "#7c3aed",
+                            border: "1px solid #a78bfa",
                             borderRadius: "10px",
-                            color: "#3f2a56",
+                            color: "#fff",
                             fontSize: "0.9rem",
                             lineHeight: "1.45",
                             marginBottom: "12px",
@@ -499,8 +500,39 @@ style={{
                         >
                           <strong>Pix para pagamento:</strong>
                           <br />
-                          CNPJ: {pixCnpj}
+                          <span>CNPJ:</span>
+                          <input
+                            readOnly
+                            value={pixCnpj}
+                            onFocus={(e) => e.target.select()}
+                            onClick={(e) => e.target.select()}
+                            style={{
+                              background: "rgba(255, 255, 255, 0.18)",
+                              border: "1px solid rgba(255, 255, 255, 0.45)",
+                              borderRadius: "8px",
+                              color: "#fff",
+                              fontSize: "0.95rem",
+                              fontWeight: "bold",
+                              marginTop: "6px",
+                              padding: "8px 10px",
+                              textAlign: "center",
+                              width: "100%",
+                            }}
+                          />
                           <br />
+                          <img
+                            src={pixQrCode}
+                            alt="QR Code Pix Monica Maria Ferreira Ribeiro"
+                            style={{
+                              background: "#fff",
+                              borderRadius: "10px",
+                              display: "block",
+                              margin: "10px auto",
+                              maxWidth: "220px",
+                              padding: "6px",
+                              width: "100%",
+                            }}
+                          />
                           Após pagar, envie o comprovante para confirmar o agendamento.
                         </div>
 
