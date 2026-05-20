@@ -383,7 +383,16 @@ if (totalNoDia.length >= 5) {
       )}
 
       {modalAgenda && (
-        <div className="modal-overlay" onClick={() => setModalAgenda(false)}>
+        <div
+          className="modal-overlay"
+          onClick={() => setModalAgenda(false)}
+          style={{
+            alignItems: "flex-start",
+            boxSizing: "border-box",
+            overflowY: "auto",
+            padding: "16px 0",
+          }}
+        >
           <div
             className="modal-conteudo"
             onClick={(e) => e.stopPropagation()}
@@ -391,9 +400,15 @@ if (totalNoDia.length >= 5) {
               background: "linear-gradient(135deg, #2c1a2e, #4b2c52)",
               color: "#fff",
               borderRadius: "20px",
+              boxSizing: "border-box",
               padding: "25px",
               maxWidth: "350px",
+              maxHeight: "calc(100dvh - 32px)",
+              overflowY: "auto",
               width: "90%",
+              alignItems: "stretch",
+              justifyContent: "flex-start",
+              WebkitOverflowScrolling: "touch",
               boxShadow: "0 0 25px rgba(0,0,0,0.6)"
             }}
           >
