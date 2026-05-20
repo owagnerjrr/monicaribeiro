@@ -49,6 +49,22 @@ import pixQrCode from "../assets/pix.jpg";
 const telefone = "5535999134301";
 const pixCnpj = "29.367.384/0001-67";
 
+const valorNumerico = (valor) => {
+  const limpo = String(valor || "")
+    .replace(/[^\d,.-]/g, "")
+    .replace(/\./g, "")
+    .replace(",", ".");
+
+  const numero = Number.parseFloat(limpo);
+  return Number.isFinite(numero) ? numero : 0;
+};
+
+const formatarMoedaBR = (valor) =>
+  valor.toLocaleString("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  });
+
 export default function Cliente() {
 
   const [servicos, setServicos] = useState([]);
@@ -69,6 +85,11 @@ export default function Cliente() {
   const [horarioSelecionado, setHorarioSelecionado] = useState("");
   const [nome, setNome] = useState("");
   const [telefoneCliente, setTelefoneCliente] = useState("");
+  const valorTotal = valorNumerico(servicoSelecionado?.preco);
+  const valorSinal = valorTotal / 2;
+  const valorRestante = valorTotal / 2;
+  const valorSinalFormatado = formatarMoedaBR(valorSinal);
+  const valorRestanteFormatado = formatarMoedaBR(valorRestante);
 
   const dataLocalHoje = () => {
     const agora = new Date();
@@ -378,6 +399,20 @@ if (totalNoDia.length >= 5) {
           >
 
             <h3 style={{ textAlign: "center", color: "#fff" }}>{servicoSelecionado?.nome}</h3>
+            {servicoSelecionado && (
+              <p
+                style={{
+                  color: "#fff",
+                  fontSize: "0.9rem",
+                  lineHeight: "1.4",
+                  margin: "-4px 0 14px",
+                  textAlign: "center",
+                  textShadow: "0 1px 3px rgba(0,0,0,0.55)",
+                }}
+              >
+                Para agendar, pague 50% agora ({valorSinalFormatado}). Os outros 50% ({valorRestanteFormatado}) ficam para depois da massagem finalizada.
+              </p>
+            )}
 
             {step === "data" && (
               <div style={{ textAlign: "center" }}>
@@ -493,7 +528,7 @@ style={{
                             textShadow: "0 1px 3px rgba(0,0,0,0.55)",
                           }}
                         >
-                          Observação: o agendamento só será computado após o pagamento de 50% até 1 hora antes da massagem.
+                          Observação: o agendamento só será computado após o pagamento de 50% ({valorSinalFormatado}) até 1 hora antes da massagem. Os outros 50% ({valorRestanteFormatado}) deverão ser pagos após a massagem finalizada.
                         </p>
 
                         <div
@@ -509,6 +544,10 @@ style={{
                           }}
                         >
                           <strong>Pix para pagamento:</strong>
+                          <br />
+                          Pague agora 50%: <strong>{valorSinalFormatado}</strong>
+                          <br />
+                          Restante após a massagem: <strong>{valorRestanteFormatado}</strong>
                           <br />
                           <span>CNPJ:</span>
                           <input
@@ -560,6 +599,10 @@ style={{
 ⏰ Horário: ${horarioSelecionado}
 
 O agendamento só será computado após o pagamento de 50% até 1 hora antes da massagem.
+
+Valor total: ${servicoSelecionado.preco}
+50% para agendar agora: ${valorSinalFormatado}
+50% restantes após a massagem finalizada: ${valorRestanteFormatado}
 
 Pix para pagamento:
 CNPJ: ${pixCnpj}
