@@ -62,11 +62,29 @@ export default function Cliente() {
 
   const [step, setStep] = useState("data");
   const [dataSelecionada, setDataSelecionada] = useState("");
-  const [horariosDisponiveis, setHorariosDisponiveis] = useState([]);
 
   const [horarioSelecionado, setHorarioSelecionado] = useState("");
   const [nome, setNome] = useState("");
   const [telefoneCliente, setTelefoneCliente] = useState("");
+
+  const dataLocalHoje = () => {
+    const agora = new Date();
+    const ano = agora.getFullYear();
+    const mes = String(agora.getMonth() + 1).padStart(2, "0");
+    const dia = String(agora.getDate()).padStart(2, "0");
+    return `${ano}-${mes}-${dia}`;
+  };
+
+  const normalizarData = (data) => {
+    if (!data) return "";
+
+    if (data.includes("/")) {
+      const [dia, mes, ano] = data.split("/");
+      return `${ano}-${mes.padStart(2, "0")}-${dia.padStart(2, "0")}`;
+    }
+
+    return data.split("T")[0];
+  };
 
   const gerarHorarios = (data) => {
 
@@ -87,27 +105,15 @@ const bloqueado = bloqueios.find(b => {
   const fim = dia === 6 ? 12 : 18;
 
   const agora = new Date();
-  const hoje = new Date().toISOString().split("T")[0];
+  const hoje = dataLocalHoje();
 
   // 🔥 REGRA DE 2 HORAS
 const horaAtual = agora.getHours();
-const minutos = agora.getMinutes();
-
-let limite = horaAtual + 2;
-
-if (minutos === 0) {
-  limite = horaAtual + 2;
-} else {
-  limite = horaAtual + 2;
-}
+const limite = horaAtual + 2;
 
   // 🔥 BLOQUEIA DIA COM 5 AGENDAMENTOS
 const totalNoDia = agendamentos.filter(a => {
-  const dataFormatada = new Date(a.data.split("/").reverse().join("-"))
-    .toISOString()
-    .split("T")[0];
-
-  return dataFormatada === data;
+  return normalizarData(a.data) === data;
 });
 
   if (totalNoDia.length >= 5) {
@@ -123,7 +129,7 @@ const totalNoDia = agendamentos.filter(a => {
     const horaFormatada = `${i.toString().padStart(2, "0")}:00`;
 
     const jaAgendado = agendamentos.find(a =>
-      a.data === data && a.hora === horaFormatada
+      normalizarData(a.data) === data && a.hora === horaFormatada
     );
 
     if (jaAgendado) continue;
@@ -136,12 +142,7 @@ const totalNoDia = agendamentos.filter(a => {
   return lista;
       };
 
-  useEffect(() => {
-    if (dataSelecionada) {
-      setHorariosDisponiveis(gerarHorarios(dataSelecionada));
-      setHorarioSelecionado("");
-    }
-  }, [dataSelecionada, bloqueios, agendamentos]); // 🔥 ALTERADO
+  const horariosDisponiveis = dataSelecionada ? gerarHorarios(dataSelecionada) : [];
 
   // 🔥 PREÇOS TEMPO REAL
   useEffect(() => {
@@ -200,17 +201,12 @@ const totalNoDia = agendamentos.filter(a => {
     return () => unsubscribe();
   }, []);
 
-  const formatarData = (data) => {
-  const [ano, mes, dia] = data.split("-");
-  return `${dia}/${mes}/${ano}`;
-};
-  
   const salvarAgendamento = async () => {
     const snapshot = await getDocs(collection(db, "appointments"));
     const lista = snapshot.docs.map(doc => doc.data());
 
     const jaExiste = lista.find(a =>
-      a.data === dataSelecionada && a.hora === horarioSelecionado
+      normalizarData(a.data) === dataSelecionada && a.hora === horarioSelecionado
     );
 
     if (jaExiste) {
@@ -219,8 +215,7 @@ const totalNoDia = agendamentos.filter(a => {
     }
 
     const totalNoDia = lista.filter(a =>
-  a.data === dataSelecionada ||
-  a.data === formatarData(dataSelecionada)
+  normalizarData(a.data) === dataSelecionada
 );
 
 if (totalNoDia.length >= 5) {
@@ -365,9 +360,12 @@ style={{
 </div>
                 <input
                   type="date"
-                  min={new Date().toISOString().split("T")[0]}
+                  min={dataLocalHoje()}
                   value={dataSelecionada}
-                  onChange={(e) => setDataSelecionada(e.target.value)}
+                  onChange={(e) => {
+                    setDataSelecionada(e.target.value);
+                    setHorarioSelecionado("");
+                  }}
                   style={{ padding: "10px", borderRadius: "10px", width: "100%", margin: "10px 0" }}
                 />
 
