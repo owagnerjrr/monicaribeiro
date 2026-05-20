@@ -486,7 +486,7 @@ style={{
 📅 Data: ${formatarDataBR(dataSelecionada)}
 ⏰ Horário: ${horarioSelecionado}
 
-Estou ciente que o agendamento será confirmado após pagamento de 50%.`;
+O agendamento só será computado após o pagamento de 50% até 1 hora antes da massagem.`;
 
 const msg = encodeURIComponent(mensagem);
 
