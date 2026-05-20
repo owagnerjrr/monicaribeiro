@@ -10,6 +10,33 @@ import {
   onSnapshot
 } from "firebase/firestore";
 
+const dataLocalHoje = () => {
+  const agora = new Date();
+  const ano = agora.getFullYear();
+  const mes = String(agora.getMonth() + 1).padStart(2, "0");
+  const dia = String(agora.getDate()).padStart(2, "0");
+  return `${ano}-${mes}-${dia}`;
+};
+
+const normalizarData = (data) => {
+  if (!data) return "";
+
+  if (data.includes("/")) {
+    const [dia, mes, ano] = data.split("/");
+    return `${ano}-${mes.padStart(2, "0")}-${dia.padStart(2, "0")}`;
+  }
+
+  return data.split("T")[0];
+};
+
+const formatarData = (data) => {
+  const dataNormalizada = normalizarData(data);
+  if (!dataNormalizada) return "";
+
+  const [ano, mes, dia] = dataNormalizada.split("-");
+  return `${dia}/${mes}/${ano}`;
+};
+
 export default function Admin() {
 
   const [agendamentos, setAgendamentos] = useState([]);
@@ -25,7 +52,23 @@ export default function Admin() {
   useEffect(() => {
 
     const unsub1 = onSnapshot(collection(db, "appointments"), (snap) => {
-      setAgendamentos(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+      const hoje = dataLocalHoje();
+      const lista = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      const agendamentosAtuais = lista.filter(a => normalizarData(a.data) >= hoje);
+      const agendamentosPassados = lista.filter(a => {
+        const data = normalizarData(a.data);
+        return data && data < hoje;
+      });
+
+      setAgendamentos(agendamentosAtuais);
+
+      if (agendamentosPassados.length > 0) {
+        Promise.all(
+          agendamentosPassados.map(a => deleteDoc(doc(db, "appointments", a.id)))
+        ).catch((error) => {
+          console.error("Erro ao apagar agendamentos passados:", error);
+        });
+      }
     });
 
     const unsub2 = onSnapshot(collection(db, "bloqueios"), (snap) => {
@@ -43,26 +86,6 @@ export default function Admin() {
     };
 
   }, []);
-
-  // 🔥 FORMATAR DATA (BR)
-  const normalizarData = (data) => {
-    if (!data) return "";
-
-    if (data.includes("/")) {
-      const [dia, mes, ano] = data.split("/");
-      return `${ano}-${mes.padStart(2, "0")}-${dia.padStart(2, "0")}`;
-    }
-
-    return data.split("T")[0];
-  };
-
-  const formatarData = (data) => {
-    const dataNormalizada = normalizarData(data);
-    if (!dataNormalizada) return "";
-
-    const [ano, mes, dia] = dataNormalizada.split("-");
-    return `${dia}/${mes}/${ano}`;
-  };
 
   // 🔥 ORDENAR DATAS
   const datasOrdenadas = Object.keys(
